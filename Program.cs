@@ -1,3 +1,6 @@
+//when using global keyword should be careful to avoid conflicts. Compiler must know the exact information.
+// global using ASPAPI.Models;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
