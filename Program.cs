@@ -1,6 +1,8 @@
 //when using global keyword should be careful to avoid conflicts. Compiler must know the exact information.
 // global using ASPAPI.Models;
 
+using ASPAPI.Services.CharacterService;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -9,7 +11,8 @@ builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-
+builder.Services.AddAutoMapper(typeof(Program).Assembly);
+builder.Services.AddScoped<ICharacterService, CharacterService>();
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

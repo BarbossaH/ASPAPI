@@ -4,36 +4,40 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using ASPAPI.Models;
+using ASPAPI.Services.CharacterService;
+
 namespace ASPAPI.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
     public class CharacterController:ControllerBase
     {
+    public ICharacterService _characterService { get; }
 
-    private static List<Character> characters = new List<Character>
+    public CharacterController(ICharacterService characterService)
     {
-        new Character(),
-        new Character{Id=1,Name="Xia"}
-    };
+      _characterService = characterService;
+        
+    }
+
     // [HttpGet]
     // [Route("GetAll")]
     [HttpGet("GetAll")]
-    public ActionResult<List<Character>> GetCharacter()
+    public async Task<ActionResult<ServiceResponse<List<Character>>>> GetCharacter()
     {
-      return Ok(characters);
+      return Ok(await _characterService.GetCharacters());
     }
 
     [HttpGet("{id}")]
-    public ActionResult<List<Character>> GetSingle(int id)
+    public async Task<ActionResult<ServiceResponse<Character>>> GetSingle(int id)
     {
-      return Ok(characters.FirstOrDefault(c=>c.Id==id));
+      return Ok(await _characterService.GetCharacterById(id));
     }
     [HttpPost]
-    public ActionResult<List<Character>> AddCharacter(Character newCharacter)
+    public async Task<ActionResult<ServiceResponse<List<Character>>>> AddCharacter(Character newCharacter)
     {
-      characters.Add(newCharacter);
-      return Ok(characters);
+      
+      return Ok(await _characterService.AddCharacter(newCharacter));
     }
   }
 }
