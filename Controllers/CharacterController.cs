@@ -23,18 +23,18 @@ namespace ASPAPI.Controllers
     // [HttpGet]
     // [Route("GetAll")]
     [HttpGet("GetAll")]
-    public async Task<ActionResult<ServiceResponse<List<Character>>>> GetCharacter()
+    public async Task<ActionResult<ServiceResponse<List<GetCharacterResDto>>>> GetCharacter()
     {
       return Ok(await _characterService.GetCharacters());
     }
 
     [HttpGet("{id}")]
-    public async Task<ActionResult<ServiceResponse<Character>>> GetSingle(int id)
+    public async Task<ActionResult<ServiceResponse<GetCharacterResDto>>> GetSingle(int id)
     {
       return Ok(await _characterService.GetCharacterById(id));
     }
     [HttpPost]
-    public async Task<ActionResult<ServiceResponse<List<Character>>>> AddCharacter(Character newCharacter)
+    public async Task<ActionResult<ServiceResponse<List<GetCharacterResDto>>>> AddCharacter(AddCharacterReqDto newCharacter)
     {
       
       return Ok(await _characterService.AddCharacter(newCharacter));

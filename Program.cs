@@ -1,5 +1,7 @@
 //when using global keyword should be careful to avoid conflicts. Compiler must know the exact information.
-// global using ASPAPI.Models;
+global using ASPAPI.Models;
+global using AutoMapper;
+global using ASPAPI.Dtos.CharacterDto;
 
 using ASPAPI.Services.CharacterService;
 
@@ -12,6 +14,7 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddAutoMapper(typeof(Program).Assembly);
+
 builder.Services.AddScoped<ICharacterService, CharacterService>();
 var app = builder.Build();
 
