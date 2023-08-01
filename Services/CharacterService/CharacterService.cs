@@ -9,6 +9,8 @@ namespace ASPAPI.Services.CharacterService
   public class CharacterService : ICharacterService
   {
     private readonly IMapper _mapper;
+    // private IMapper _mapper { get; }
+
     public CharacterService(IMapper mapper)
     {
       _mapper = mapper;
@@ -17,30 +19,46 @@ namespace ASPAPI.Services.CharacterService
         new Character(),
         new Character{Id=1,Name="Xia"}
   };
-    public async Task<ServiceResponse<List<GetCharacterResDto>>> AddCharacter(AddCharacterReqDto newC)
+    public async Task<ServiceResponse<List<GetCharacterDto>>> AddCharacter(AddCharacterDto newC)
     {
-      var serviceResponse = new ServiceResponse<List<GetCharacterResDto>>();
+      var serviceResponse = new ServiceResponse<List<GetCharacterDto>>();
       var character = _mapper.Map<Character>(newC);
       character.Id = characters.Max(c => c.Id) + 1;
       characters.Add(character);
-      serviceResponse.Data = characters.Select(c => _mapper.Map<GetCharacterResDto>(c)).ToList();
+      serviceResponse.Data = characters.Select(c => _mapper.Map<GetCharacterDto>(c)).ToList();
       return serviceResponse;
     }
 
-    public async Task<ServiceResponse<GetCharacterResDto>> GetCharacterById(int id)
+    public async Task<ServiceResponse<GetCharacterDto>> GetCharacterById(int id)
     {
-      var serviceResponse = new ServiceResponse<GetCharacterResDto>();
+      var serviceResponse = new ServiceResponse<GetCharacterDto>();
 
         var character =characters.FirstOrDefault(c => c.Id == id);
-        serviceResponse.Data = _mapper.Map<GetCharacterResDto>(character) ;
+        serviceResponse.Data = _mapper.Map<GetCharacterDto>(character) ;
 
       return serviceResponse;
     }
 
-    public async Task<ServiceResponse<List<GetCharacterResDto>>> GetCharacters()
+    public async Task<ServiceResponse<List<GetCharacterDto>>> GetCharacters()
     {
-      var serviceResponse = new ServiceResponse<List<GetCharacterResDto>>();
-      serviceResponse.Data = characters.Select(c=>_mapper.Map<GetCharacterResDto>(c)).ToList();
+      var serviceResponse = new ServiceResponse<List<GetCharacterDto>>();
+      serviceResponse.Data = characters.Select(c=>_mapper.Map<GetCharacterDto>(c)).ToList();
+      return serviceResponse;
+    }
+
+    public async Task<ServiceResponse<GetCharacterDto>> UpdateCharacter(UpdateCharacterDto newC)
+    {
+      var serviceResponse = new ServiceResponse<GetCharacterDto>();
+      var character = characters.FirstOrDefault(c => c.Id == newC.Id);
+      character.Defense = newC.Defense;
+      character.HitPoints = newC.HitPoints;
+      character.Intelligence = newC.Intelligence;
+      character.Name = newC.Name;
+      character.Roles = newC.Roles;
+      character.Strength = newC.Strength;
+
+      //response the dto, instead of the original data
+      serviceResponse.Data = _mapper.Map<GetCharacterDto>(character);
       return serviceResponse;
     }
   }

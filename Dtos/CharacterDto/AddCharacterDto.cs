@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace ASPAPI.Dtos.CharacterDto
 {
-    public class AddCharacterReqDto
+    public class AddCharacterDto
     {
         //remove the Id, because when adding an object, we don't need the Id
         public string Name { get; set; } = "Julian";

@@ -11,8 +11,9 @@ namespace ASPAPI
         {
             //mapper.Map<DestinationClass>(source)
             //CreateMap<SourceClass, DestinationClass>();
-            CreateMap<Character, GetCharacterResDto>();
-            CreateMap<AddCharacterReqDto, Character>();
+            CreateMap<Character, GetCharacterDto>();
+            CreateMap<AddCharacterDto, Character>();
+            CreateMap<UpdateCharacterDto, Character>();
         }
     }
 }

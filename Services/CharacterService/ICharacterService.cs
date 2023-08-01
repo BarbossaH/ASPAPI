@@ -8,9 +8,10 @@ namespace ASPAPI.Services.CharacterService
 {
     public interface ICharacterService
     {
-    Task<ServiceResponse< List<GetCharacterResDto>>> GetCharacters();
-    Task<ServiceResponse<GetCharacterResDto>> GetCharacterById(int id);
+    Task<ServiceResponse< List<GetCharacterDto>>> GetCharacters();
+    Task<ServiceResponse<GetCharacterDto>> GetCharacterById(int id);
 
-    Task<ServiceResponse<List<GetCharacterResDto>>> AddCharacter(AddCharacterReqDto c);
+    Task<ServiceResponse<List<GetCharacterDto>>> AddCharacter(AddCharacterDto C);
+    Task<ServiceResponse<GetCharacterDto>> UpdateCharacter(UpdateCharacterDto newC);
   }
 }

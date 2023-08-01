@@ -12,7 +12,8 @@ namespace ASPAPI.Controllers
     [Route("api/[controller]")]
     public class CharacterController:ControllerBase
     {
-    public ICharacterService _characterService { get; }
+    // public ICharacterService _characterService { get; }
+    private readonly ICharacterService _characterService;
 
     public CharacterController(ICharacterService characterService)
     {
@@ -23,21 +24,27 @@ namespace ASPAPI.Controllers
     // [HttpGet]
     // [Route("GetAll")]
     [HttpGet("GetAll")]
-    public async Task<ActionResult<ServiceResponse<List<GetCharacterResDto>>>> GetCharacter()
+    public async Task<ActionResult<ServiceResponse<List<GetCharacterDto>>>> GetCharacter()
     {
       return Ok(await _characterService.GetCharacters());
     }
 
     [HttpGet("{id}")]
-    public async Task<ActionResult<ServiceResponse<GetCharacterResDto>>> GetSingle(int id)
+    public async Task<ActionResult<ServiceResponse<GetCharacterDto>>> GetSingle(int id)
     {
       return Ok(await _characterService.GetCharacterById(id));
     }
     [HttpPost]
-    public async Task<ActionResult<ServiceResponse<List<GetCharacterResDto>>>> AddCharacter(AddCharacterReqDto newCharacter)
+    public async Task<ActionResult<ServiceResponse<List<GetCharacterDto>>>> AddCharacter(AddCharacterDto newCharacter)
     {
       
       return Ok(await _characterService.AddCharacter(newCharacter));
+    }
+
+    [HttpPut]
+    public async Task<ActionResult<ServiceResponse<GetCharacterDto>>> UpdateCharacter(UpdateCharacterDto newC)
+    {
+      return Ok(await _characterService.UpdateCharacter(newC));
     }
   }
 }
