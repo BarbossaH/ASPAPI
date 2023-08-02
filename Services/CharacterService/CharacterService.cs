@@ -11,56 +11,56 @@ namespace ASPAPI.Services.CharacterService
     private readonly IMapper _mapper;
     // private IMapper _mapper { get; }
 
-    public CharacterService(IMapper mapper)
+    private readonly DataContext _context;
+
+    public CharacterService(IMapper mapper, DataContext context)
     {
       _mapper = mapper;
+      _context = context;
     }
-    public static List<Character> characters = new List<Character>{
-        new Character(),
-        new Character{Id=1,Name="Xia"}
-  };
+  
     public async Task<ServiceResponse<List<GetCharacterDto>>> AddCharacter(AddCharacterDto newC)
     {
       var serviceResponse = new ServiceResponse<List<GetCharacterDto>>();
       var character = _mapper.Map<Character>(newC);
-      character.Id = characters.Max(c => c.Id) + 1;
-      characters.Add(character);
-      serviceResponse.Data = characters.Select(c => _mapper.Map<GetCharacterDto>(c)).ToList();
+      var dbCharacters = await _context.Characters.ToListAsync();
+
+      character.Id = dbCharacters.Max(c => c.Id) + 1;
+      dbCharacters.Add(character);
+      serviceResponse.Data = dbCharacters.Select(c => _mapper.Map<GetCharacterDto>(c)).ToList();
       return serviceResponse;
     }
 
    public async Task<ServiceResponse<List<GetCharacterDto>>> DeleteCharacter(int id)
    {
       var serviceResponse = new ServiceResponse<List<GetCharacterDto>> ();
+      var dbCharacters = await _context.Characters.ToListAsync();
+      
       try
       {
-          var character = characters.FirstOrDefault(c => c.Id == id);
+          var character = dbCharacters.FirstOrDefault(c => c.Id == id);
         //if ensuring there must be an object, then First can be used, otherwise it will throw an error
-        //var character = characters.First(c => c.Id == id);
+        //var character = dbCharacters.First(c => c.Id == id);
         if(character is null)
           {
             throw new Exception($"Id {id} not found");
           }
-            characters.Remove(character);
-          serviceResponse.Data = characters.Select(c => _mapper.Map<GetCharacterDto>(c)).ToList();
+            dbCharacters.Remove(character);
+          serviceResponse.Data = dbCharacters.Select(c => _mapper.Map<GetCharacterDto>(c)).ToList();
           }
       catch (Exception ex)
       {
         serviceResponse.Success = false;
         serviceResponse.Message = ex.Message;
-
-      }
-
-   
+      }   
       return serviceResponse;
     }
-
 
     public async Task<ServiceResponse<GetCharacterDto>> GetCharacterById(int id)
     {
       var serviceResponse = new ServiceResponse<GetCharacterDto>();
-
-        var character =characters.FirstOrDefault(c => c.Id == id);
+      var dbCharacters = await _context.Characters.ToListAsync();
+        var character =dbCharacters.FirstOrDefault(c => c.Id == id);
         serviceResponse.Data = _mapper.Map<GetCharacterDto>(character) ;
 
       return serviceResponse;
@@ -69,17 +69,19 @@ namespace ASPAPI.Services.CharacterService
     public async Task<ServiceResponse<List<GetCharacterDto>>> GetCharacters()
     {
       var serviceResponse = new ServiceResponse<List<GetCharacterDto>>();
-      serviceResponse.Data = characters.Select(c=>_mapper.Map<GetCharacterDto>(c)).ToList();
+      var dbCharacters = await _context.Characters.ToListAsync();
+      serviceResponse.Data = dbCharacters.Select(c=>_mapper.Map<GetCharacterDto>(c)).ToList();
       return serviceResponse;
     }
 
     public async Task<ServiceResponse<GetCharacterDto>> UpdateCharacter(UpdateCharacterDto newC)
     {
         var serviceResponse = new ServiceResponse<GetCharacterDto>();
+      var dbCharacters = await _context.Characters.ToListAsync();
 
       try
       {
-        var character = characters.FirstOrDefault(c => c.Id == newC.Id);
+        var character = dbCharacters.FirstOrDefault(c => c.Id == newC.Id);
         if (character is null)
         {
           throw new Exception($"Character with ID {newC.Id} not found");
