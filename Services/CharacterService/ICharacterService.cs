@@ -13,5 +13,7 @@ namespace ASPAPI.Services.CharacterService
 
     Task<ServiceResponse<List<GetCharacterDto>>> AddCharacter(AddCharacterDto C);
     Task<ServiceResponse<GetCharacterDto>> UpdateCharacter(UpdateCharacterDto newC);
+
+    Task<ServiceResponse<List<GetCharacterDto>>> DeleteCharacter(int id);
   }
 }

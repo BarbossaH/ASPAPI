@@ -44,7 +44,22 @@ namespace ASPAPI.Controllers
     [HttpPut]
     public async Task<ActionResult<ServiceResponse<GetCharacterDto>>> UpdateCharacter(UpdateCharacterDto newC)
     {
-      return Ok(await _characterService.UpdateCharacter(newC));
+      var response = await _characterService.UpdateCharacter(newC);
+      if(response.Data is null){
+        return NotFound(response);
+      }
+      return Ok(response);
+    }
+
+    [HttpDelete("{id}")]
+    public async Task<ActionResult<ServiceResponse<List<GetCharacterDto>>>> DeleteCharacter(int id)
+    {
+      var response = await _characterService.DeleteCharacter(id);
+      if(response.Data is null)
+      {
+        return NotFound(response);
+      }
+      return Ok(response);
     }
   }
 }
