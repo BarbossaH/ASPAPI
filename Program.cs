@@ -6,6 +6,7 @@ global using Microsoft.EntityFrameworkCore;
 global using ASPAPI.Data;
 
 using ASPAPI.Services.CharacterService;
+using ASPAPI.Services.CustomerService;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -21,6 +22,8 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddAutoMapper(typeof(Program).Assembly);
 
 builder.Services.AddScoped<ICharacterService, CharacterService>();
+builder.Services.AddTransient<ICustomerService, CustomerService>();
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
