@@ -12,8 +12,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace ASPAPI.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20230802064144_customers")]
-    partial class customers
+    [Migration("20230802213103_Initialisation")]
+    partial class Initialisation
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -64,7 +64,7 @@ namespace ASPAPI.Migrations
                         .IsUnicode(false)
                         .HasColumnType("character varying(50)");
 
-                    b.Property<decimal?>("Creditlimit")
+                    b.Property<decimal?>("CreditLimit")
                         .HasColumnType("decimal(18, 2)");
 
                     b.Property<string>("Email")
@@ -86,7 +86,7 @@ namespace ASPAPI.Migrations
                         .IsUnicode(false)
                         .HasColumnType("character varying(50)");
 
-                    b.Property<int?>("Taxcode")
+                    b.Property<int?>("TaxCode")
                         .HasColumnType("integer");
 
                     b.HasKey("Code");

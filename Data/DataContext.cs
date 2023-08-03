@@ -14,7 +14,7 @@ namespace ASPAPI.Data
     // public DbSet<Character> Characters{ get; set; }
     public DbSet<Character> Characters => Set<Character>();
 
-    public virtual DbSet<Customer>? Customers { get; set; }
+    public virtual DbSet<Customer> Customers { get; set; }
     // public DbSet<Customer> Customers => Set<Customer>();
   }
 }

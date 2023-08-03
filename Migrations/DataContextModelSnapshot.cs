@@ -61,7 +61,7 @@ namespace ASPAPI.Migrations
                         .IsUnicode(false)
                         .HasColumnType("character varying(50)");
 
-                    b.Property<decimal?>("Creditlimit")
+                    b.Property<decimal?>("CreditLimit")
                         .HasColumnType("decimal(18, 2)");
 
                     b.Property<string>("Email")
@@ -83,7 +83,7 @@ namespace ASPAPI.Migrations
                         .IsUnicode(false)
                         .HasColumnType("character varying(50)");
 
-                    b.Property<int?>("Taxcode")
+                    b.Property<int?>("TaxCode")
                         .HasColumnType("integer");
 
                     b.HasKey("Code");

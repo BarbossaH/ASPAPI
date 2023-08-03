@@ -5,12 +5,10 @@ using System.Threading.Tasks;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace ASPAPI.Models
+namespace ASPAPI.Dtos.CustomerDto
 {
-    [Table("Customers")]
-    public class Customer
+    public class GetCustomerDto
     {
-    [Key]
     [StringLength(50)]
     [Unicode(false)]
     public string Code { get; set; } = null!;
@@ -33,5 +31,7 @@ namespace ASPAPI.Models
     public bool ? IsActive { get; set; }
 
     public int? TaxCode { get; set; }
+
+    public string ? StatusName { get; set; }
     }
 }

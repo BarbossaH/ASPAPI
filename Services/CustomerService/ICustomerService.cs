@@ -3,10 +3,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
+
 namespace ASPAPI.Services.CustomerService
 {
     public interface ICustomerService
     {
-    List<Customer> GetCustomers();
+        Task<ServiceResponse<List<GetCustomerDto>>> GetCustomers();
+        Task<ServiceResponse<GetCustomerDto>> GetCustomerByCode(string code);
+        Task<ServiceResponse<List<GetCustomerDto>>> RemoveCustomerByCode(string code);
     }
 }

@@ -17,13 +17,15 @@ namespace ASPAPI.Controllers
       _customerService = service;
     }
     [HttpGet]
-    public IActionResult GetCustomers()
+    public async Task<IActionResult> GetCustomers()
     {
-      var customers = _customerService.GetCustomers();
+      var customers = await _customerService.GetCustomers();
       if(customers is null){
         return NotFound();
       }
       return Ok(customers);
     }
+    // [HttpGet]
+    // public async
   }
 }

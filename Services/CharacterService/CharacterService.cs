@@ -24,9 +24,14 @@ namespace ASPAPI.Services.CharacterService
       var serviceResponse = new ServiceResponse<List<GetCharacterDto>>();
       var character = _mapper.Map<Character>(newC);
       var dbCharacters = await _context.Characters.ToListAsync();
-
-      character.Id = dbCharacters.Max(c => c.Id) + 1;
+      // Console.WriteLine($"{dbCharacters} ,{dbCharacters.Count}999999");
+      
+      character.Id = dbCharacters.Count>0 ?dbCharacters.Max(c => c.Id) + 1:1;
       dbCharacters.Add(character);
+        // 向数据库中添加新角色
+     _context.Characters.Add(character);
+        // 保存更改到数据库
+      await _context.SaveChangesAsync();
       serviceResponse.Data = dbCharacters.Select(c => _mapper.Map<GetCharacterDto>(c)).ToList();
       return serviceResponse;
     }
@@ -34,20 +39,21 @@ namespace ASPAPI.Services.CharacterService
    public async Task<ServiceResponse<List<GetCharacterDto>>> DeleteCharacter(int id)
    {
       var serviceResponse = new ServiceResponse<List<GetCharacterDto>> ();
-      var dbCharacters = await _context.Characters.ToListAsync();
-      
+      var dbCharacters = await _context.Characters.ToListAsync();      
       try
       {
-          var character = dbCharacters.FirstOrDefault(c => c.Id == id);
-        //if ensuring there must be an object, then First can be used, otherwise it will throw an error
-        //var character = dbCharacters.First(c => c.Id == id);
+        var character = dbCharacters.FirstOrDefault(c => c.Id == id);
         if(character is null)
           {
             throw new Exception($"Id {id} not found");
-          }
+          }else{
             dbCharacters.Remove(character);
-          serviceResponse.Data = dbCharacters.Select(c => _mapper.Map<GetCharacterDto>(c)).ToList();
-          }
+          _context.Characters.Remove(character);
+            await _context.SaveChangesAsync();
+
+            serviceResponse.Data = dbCharacters.Select(c => _mapper.Map<GetCharacterDto>(c)).ToList();
+           }
+      }
       catch (Exception ex)
       {
         serviceResponse.Success = false;
@@ -78,7 +84,6 @@ namespace ASPAPI.Services.CharacterService
     {
         var serviceResponse = new ServiceResponse<GetCharacterDto>();
       var dbCharacters = await _context.Characters.ToListAsync();
-
       try
       {
         var character = dbCharacters.FirstOrDefault(c => c.Id == newC.Id);
@@ -86,15 +91,9 @@ namespace ASPAPI.Services.CharacterService
         {
           throw new Exception($"Character with ID {newC.Id} not found");
         }
-        // _mapper.Map<Character>(newC); //this is ok too
-        _mapper.Map(newC, character);
-        character.Defense = newC.Defense;
-        character.HitPoints = newC.HitPoints;
-        character.Intelligence = newC.Intelligence;
-        character.Name = newC.Name;
-        character.Roles = newC.Roles;
-        character.Strength = newC.Strength;
+         _mapper.Map(newC, character);
 
+        await _context.SaveChangesAsync();
         //response the dto, instead of the original data
         serviceResponse.Data = _mapper.Map<GetCharacterDto>(character);
       }
