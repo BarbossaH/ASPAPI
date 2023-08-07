@@ -15,11 +15,11 @@ namespace ASPAPI.Controllers
     // public ICharacterService _characterService { get; }
     private readonly ICharacterService _characterService;
 
-    public CharacterController(ICharacterService characterService)
-    {
-      _characterService = characterService;
-        
-    }
+      public CharacterController(ICharacterService characterService)
+      {
+        _characterService = characterService;
+          
+      }
 
     // [HttpGet]
     // [Route("GetAll")]

@@ -11,5 +11,7 @@ namespace ASPAPI.Services.CustomerService
         Task<ServiceResponse<List<GetCustomerDto>>> GetCustomers();
         Task<ServiceResponse<GetCustomerDto>> GetCustomerByCode(string code);
         Task<ServiceResponse<List<GetCustomerDto>>> RemoveCustomerByCode(string code);
+        Task<ServiceResponse<List<GetCustomerDto>>> AddCustomer(AddCustomerDto addCustomerDto);
+        Task<ServiceResponse<GetCustomerDto>> UpdateCustomer(UpdateCustomerDto updateCustomerDto, string code);
     }
 }

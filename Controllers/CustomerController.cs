@@ -25,7 +25,10 @@ namespace ASPAPI.Controllers
       }
       return Ok(customers);
     }
-    // [HttpGet]
-    // public async
+    [HttpPost("customers")]
+    public async Task<IActionResult> AddCustomer(AddCustomerDto addCustomerDto)
+    {
+      return Ok(await _customerService.AddCustomer(addCustomerDto));
+    }
   }
 }
