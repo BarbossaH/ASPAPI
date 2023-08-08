@@ -58,29 +58,78 @@ namespace ASPAPI.Services.CustomerService
     }
     public async Task<ServiceResponse<List<GetCustomerDto>>> RemoveCustomerByCode(string code)
     {
-      ServiceResponse<List<GetCustomerDto>> _response = new ServiceResponse<List<GetCustomerDto>> ();
+      ServiceResponse<List<GetCustomerDto>> _response = new();
+      try
+      {
+        var customer = await _context.Customers.FindAsync(code);
+        if(customer!=null){
+          //remove from cache
+          _context.Customers.Remove(customer);
+          //save the result after removing.
+          await _context.SaveChangesAsync();
+          _response.Success = true;
+        var customers = await _context.Customers.ToListAsync();
+        _response.Data = customers.Select(c => _mapper.Map<GetCustomerDto>(c)).ToList();
+        }else{
+          _response.ResponseCode = 404;
+          _response.Message = "Data not found";
+        }
+  
+      }
+      catch (Exception ex)
+      {
+        _response.Success = false;
+        _response.Message = ex.Message;
+      }
       return _response;
     }
 
-       public async Task<ServiceResponse<List<GetCustomerDto>>> AddCustomer(AddCustomerDto addCustomerDto)
-        {
+      public async Task<ServiceResponse<List<GetCustomerDto>>> AddCustomer(AddCustomerDto addCustomerDto)
+      {
         ServiceResponse<List<GetCustomerDto>> _response = new();
       try {
         Customer customer = _mapper.Map<AddCustomerDto, Customer>(addCustomerDto);
          _context.Customers.Add(customer);
         await _context.SaveChangesAsync();
         _response.Success = true;
+        _response.ResponseCode = 201;
         _response.Message = "Success";
+        //get the newest data from database and then send it to front end
         var dbCustomers = await _context.Customers.ToListAsync();
         _response.Data = dbCustomers.Select(c=>_mapper.Map<GetCustomerDto>(c)).ToList();
        }
-      catch { }
+      catch(Exception ex) {
+        _response.ResponseCode = 400;
+        _response.Message = ex.Message;
+       }
       return _response;
-        }
+   }
 
-        public async Task<ServiceResponse<GetCustomerDto>> UpdateCustomer(UpdateCustomerDto updateCustomerDto, string code)
+        public async Task<ServiceResponse<List<GetCustomerDto>>> UpdateCustomer(UpdateCustomerDto updateCustomerDto, string code)
         {
-            throw new NotImplementedException();
+          ServiceResponse<List<GetCustomerDto>> _response = new();
+          try
+          {
+        // var customer = await _context.Customers.FindAsync(code);
+        var customer = await _context.Customers.FirstOrDefaultAsync(c => c.Code == code);
+        if(customer is null){
+          _response.Message = "Code not found";
+          _response.Success = false;
+        }
+        else{
+          _mapper.Map(updateCustomerDto, customer);
+          await _context.SaveChangesAsync();
+          var customers = await _context.Customers.ToListAsync();
+          _response.Data = customers.Select(c=>_mapper.Map<GetCustomerDto>(c)).ToList() ;
+        }
+          }
+          catch (Exception ex)
+          {
+
+        _response.Message = ex.Message;
+        _response.Success = false;
+          }
+      return _response;
         }
     }
 }

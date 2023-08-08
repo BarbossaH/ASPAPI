@@ -25,10 +25,29 @@ namespace ASPAPI.Controllers
       }
       return Ok(customers);
     }
+
+    [HttpGet("{code}")]
+    public async Task<IActionResult> GetCustomerByCode(string code)
+    {
+      return Ok(await _customerService.GetCustomerByCode(code));
+    }
+
     [HttpPost("customers")]
     public async Task<IActionResult> AddCustomer(AddCustomerDto addCustomerDto)
     {
       return Ok(await _customerService.AddCustomer(addCustomerDto));
+    }
+
+    [HttpDelete("delete-customer")]
+    public async Task<IActionResult> RemoveCustomerByCode( string code)
+    {
+      return Ok(await _customerService.RemoveCustomerByCode(code));
+    }
+
+    [HttpPut("update-customer")]
+    public async Task<IActionResult> UpdateCustomer(UpdateCustomerDto updateCustomerDto, string code)
+    {
+      return Ok(await _customerService.UpdateCustomer(updateCustomerDto, code));
     }
   }
 }
