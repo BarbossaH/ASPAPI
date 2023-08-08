@@ -9,10 +9,12 @@ namespace ASPAPI.Services.CustomerService
   {
     private readonly DataContext _context;
     private readonly IMapper _mapper;
-    public CustomerService(DataContext context, IMapper mapper)
+    private readonly ILogger<CustomerService> _logger;
+    public CustomerService(DataContext context, IMapper mapper,ILogger<CustomerService> logger)
     {
       _context = context;
       _mapper = mapper;
+      _logger = logger;
     }
     public async Task<ServiceResponse<List<GetCustomerDto>>> GetCustomers()
     {
@@ -88,6 +90,7 @@ namespace ASPAPI.Services.CustomerService
       {
         ServiceResponse<List<GetCustomerDto>> _response = new();
       try {
+        _logger.LogInformation("Add a customer");
         Customer customer = _mapper.Map<AddCustomerDto, Customer>(addCustomerDto);
          _context.Customers.Add(customer);
         await _context.SaveChangesAsync();
@@ -101,6 +104,8 @@ namespace ASPAPI.Services.CustomerService
       catch(Exception ex) {
         _response.ResponseCode = 400;
         _response.Message = ex.Message;
+        _logger.LogError(ex.Message,ex);
+
        }
       return _response;
    }

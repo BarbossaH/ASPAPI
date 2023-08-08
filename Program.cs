@@ -8,6 +8,7 @@ global using ASPAPI.Dtos.CustomerDto;
 using ASPAPI.Services.CharacterService;
 using ASPAPI.Services.CustomerService;
 using ASPAPI;
+using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -29,6 +30,24 @@ builder.Services.AddSingleton(mapper);
 
 builder.Services.AddScoped<ICharacterService, CharacterService>();
 builder.Services.AddTransient<ICustomerService, CustomerService>();
+
+
+//serilog
+string appRoot = AppDomain.CurrentDomain.BaseDirectory;
+string defaultPath = Path.Combine(appRoot, "Logs", "API_Log.txt");
+string logPath = builder.Configuration.GetSection("Logging:LogPath").Value ??defaultPath ;
+// string logPath = builder.Configuration.GetSection("Logging:LogPath").Value  ;
+var _logger = new LoggerConfiguration()
+// .MinimumLevel.Debug()
+.MinimumLevel.Information()
+.MinimumLevel.Override("microsoft", Serilog.Events.LogEventLevel.Warning)
+.Enrich.FromLogContext()
+.WriteTo.File(logPath).CreateLogger();
+builder.Logging.AddSerilog(_logger);
+// if(!string.IsNullOrEmpty(logPath)){
+
+// }
+
 
 var app = builder.Build();
 
