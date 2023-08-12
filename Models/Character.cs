@@ -1,18 +1,21 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
-namespace ASPAPI.Models
+namespace ASPAPI.Models;
+
+public partial class Character
 {
-    public class Character
-    {
-        public int Id { get; set; }
-        public string Name { get; set; } = "Julian";
-        public int HitPoints { get; set; } = 95;
-        public int Strength { get; set; } = 10;
-        public int Defense { get; set; } = 10;
-        public int Intelligence { get; set; } = 10;
-        public RpgClass Roles { get; set; } = RpgClass.Paladin;
-  }
+    public int Id { get; set; }
+
+    public string Name { get; set; } = null!;
+
+    public int HitPoints { get; set; }
+
+    public int Strength { get; set; }
+
+    public int Defense { get; set; }
+
+    public int Intelligence { get; set; }
+
+    public int Roles { get; set; }
 }

@@ -9,6 +9,9 @@ using ASPAPI.Services.CharacterService;
 using ASPAPI.Services.CustomerService;
 using ASPAPI;
 using Serilog;
+using Microsoft.AspNetCore.RateLimiting;
+using ASPAPI.Helper;
+using Microsoft.AspNetCore.Authentication;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -16,6 +19,12 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddDbContext<DataContext>(
     options=>options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
+
+
+//AddScheme,AddCookie,AddJwtBearer,AddOAuth and so on, 
+builder.Services.AddAuthentication("BasicAuthentication")
+.AddScheme<AuthenticationSchemeOptions, BasicAuthenticationHandler>("BasicAuthentication",null);
+
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
@@ -27,10 +36,43 @@ var autoMapper = new MapperConfiguration(item => item.AddProfile(new AutoMapperP
 IMapper mapper = autoMapper.CreateMapper();
 builder.Services.AddSingleton(mapper);
 
+//cors
+builder.Services.AddCors(policy => policy.AddDefaultPolicy( build => {
+    build.WithOrigins("*")
+    .AllowAnyMethod()
+    .AllowAnyHeader();
+ }));
 
+#region 
+// builder.Services.AddCors(policy => policy.AddPolicy("corsPolicy", build => {
+//     build.WithOrigins("*")
+//     .AllowAnyMethod()
+//     .AllowAnyHeader();
+//  }));
+
+// builder.Services.AddCors(policy => policy.AddPolicy("corsPolicy1", build => {
+//     build.WithOrigins("https://www.google.com", "https://www.google.com.hk")
+//     .AllowAnyMethod()
+//     .AllowAnyHeader();
+//  }));
+
+// builder.Services.AddCors(policy => policy.AddPolicy("corsPolicy2", build => {
+//     build.WithOrigins("https://www.github.com", "https://www.sina.com")
+//     .AllowAnyMethod()
+//     .AllowAnyHeader();
+//  }));
+#endregion
+
+//dependency injection
 builder.Services.AddScoped<ICharacterService, CharacterService>();
 builder.Services.AddTransient<ICustomerService, CustomerService>();
 
+builder.Services.AddRateLimiter(_ => _.AddFixedWindowLimiter(policyName:"fixedWindow", options=>{
+    options.Window = TimeSpan.FromSeconds(10);
+    options.PermitLimit = 1;
+    options.QueueLimit = 0;
+    options.QueueProcessingOrder = System.Threading.RateLimiting.QueueProcessingOrder.OldestFirst;
+}).RejectionStatusCode=401);
 
 //serilog
 string appRoot = AppDomain.CurrentDomain.BaseDirectory;
@@ -44,13 +86,10 @@ var _logger = new LoggerConfiguration()
 .Enrich.FromLogContext()
 .WriteTo.File(logPath).CreateLogger();
 builder.Logging.AddSerilog(_logger);
-// if(!string.IsNullOrEmpty(logPath)){
-
-// }
 
 
 var app = builder.Build();
-
+app.UseRateLimiter();
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
@@ -58,7 +97,12 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
+// app.UseCors("corsPolicy1");
+app.UseCors();
+
 app.UseHttpsRedirection();
+
+app.UseAuthentication();
 
 app.UseAuthorization();
 

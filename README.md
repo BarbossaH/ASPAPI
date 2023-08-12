@@ -28,3 +28,12 @@ setting in appsettings.json: "Logpath": "/Users/huangbo/Projects/ASPAPI/Logs/API
 ;
 
 # CORs
+
+1. set default policy
+2. according to the needs to set particular policy
+
+# Rate Limiting
+
+# Generate code based on the database
+
+using cil: dotnet ef dbcontext scaffold "YourConnectionString" Npgsql.EntityFrameworkCore.PostgreSQL -o Models --force

@@ -3,10 +3,17 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using ASPAPI.Services.CustomerService;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
 
 namespace ASPAPI.Controllers
-{
+{   
+    // [EnableCors("corsPolicy1")] //make this whole controller affected by this policy
+    // [DisableCors]  //this particular controller with the action method cannot be accessed for any application or domain.
+    [Authorize]
+    [EnableRateLimiting("fixedWindow")]
     [ApiController]
     [Route("api/[controller]")]
     public class CustomerController:ControllerBase
@@ -16,7 +23,9 @@ namespace ASPAPI.Controllers
     {
       _customerService = service;
     }
-    [HttpGet]
+
+    [AllowAnonymous] //it can ignore the authentication
+    [HttpGet("getallcustomers")]
     public async Task<IActionResult> GetCustomers()
     {
       var customers = await _customerService.GetCustomers();
@@ -26,7 +35,8 @@ namespace ASPAPI.Controllers
       return Ok(customers);
     }
 
-    [HttpGet("{code}")]
+    [DisableRateLimiting]
+    [HttpGet("GetCustomer")]
     public async Task<IActionResult> GetCustomerByCode(string code)
     {
       return Ok(await _customerService.GetCustomerByCode(code));
@@ -38,6 +48,7 @@ namespace ASPAPI.Controllers
       return Ok(await _customerService.AddCustomer(addCustomerDto));
     }
 
+    // [EnableCors("corsPolicy1")] //to influence this method only
     [HttpDelete("delete-customer")]
     public async Task<IActionResult> RemoveCustomerByCode( string code)
     {
