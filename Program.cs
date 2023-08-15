@@ -12,6 +12,10 @@ using Serilog;
 using Microsoft.AspNetCore.RateLimiting;
 using ASPAPI.Helper;
 using Microsoft.AspNetCore.Authentication;
+using ASPAPI.Dtos;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -22,9 +26,26 @@ builder.Services.AddDbContext<DataContext>(
 
 
 //AddScheme,AddCookie,AddJwtBearer,AddOAuth and so on, 
-builder.Services.AddAuthentication("BasicAuthentication")
-.AddScheme<AuthenticationSchemeOptions, BasicAuthenticationHandler>("BasicAuthentication",null);
+// builder.Services.AddAuthentication("BasicAuthentication")
+// .AddScheme<AuthenticationSchemeOptions, BasicAuthenticationHandler>("BasicAuthentication",null);
 
+var _authKey = builder.Configuration.GetValue<string>("JwtSetting:SecurityKey");
+builder.Services.AddAuthentication(item =>
+{
+    item.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+    item.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+}).AddJwtBearer(item => {
+    item.RequireHttpsMetadata = true;
+    item.SaveToken = true;
+    item.TokenValidationParameters = new TokenValidationParameters()
+    {
+        ValidateIssuerSigningKey = true,
+        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_authKey)),
+        ValidateIssuer = false,
+        ValidateAudience=false,
+        ClockSkew=TimeSpan.Zero
+    };
+});
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
@@ -87,6 +108,8 @@ var _logger = new LoggerConfiguration()
 .WriteTo.File(logPath).CreateLogger();
 builder.Logging.AddSerilog(_logger);
 
+var _jwtSetting = builder.Configuration.GetSection("JwtSetting");
+builder.Services.Configure<JwtSettings>(_jwtSetting);
 
 var app = builder.Build();
 app.UseRateLimiter();

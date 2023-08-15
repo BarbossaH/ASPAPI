@@ -39,5 +39,5 @@ public partial class User
     [Column("role")]
     [StringLength(50)]
     [Unicode(false)]
-    public string? Role { get; set; }
+    public string Role { get; set; } = null!;
 }

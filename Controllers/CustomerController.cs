@@ -34,7 +34,7 @@ namespace ASPAPI.Controllers
       }
       return Ok(customers);
     }
-
+    // [AllowAnonymous] 
     [DisableRateLimiting]
     [HttpGet("GetCustomer")]
     public async Task<IActionResult> GetCustomerByCode(string code)
