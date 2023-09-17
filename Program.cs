@@ -16,6 +16,7 @@ using ASPAPI.Dtos;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
+using ASPAPI.Services.RefreshTokenService;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -29,7 +30,7 @@ builder.Services.AddDbContext<DataContext>(
 // builder.Services.AddAuthentication("BasicAuthentication")
 // .AddScheme<AuthenticationSchemeOptions, BasicAuthenticationHandler>("BasicAuthentication",null);
 
-var _authKey = builder.Configuration.GetValue<string>("JwtSetting:SecurityKey");
+var _authKey = builder.Configuration.GetValue<string>("JwtSetting:SecurityKey")??"thisispossiblekeyfromjulian";
 builder.Services.AddAuthentication(item =>
 {
     item.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -87,6 +88,7 @@ builder.Services.AddCors(policy => policy.AddDefaultPolicy( build => {
 //dependency injection
 builder.Services.AddScoped<ICharacterService, CharacterService>();
 builder.Services.AddTransient<ICustomerService, CustomerService>();
+builder.Services.AddTransient<IRefreshTokenHandler, RefreshTokenHandler>();
 
 builder.Services.AddRateLimiter(_ => _.AddFixedWindowLimiter(policyName:"fixedWindow", options=>{
     options.Window = TimeSpan.FromSeconds(10);
@@ -110,6 +112,7 @@ builder.Logging.AddSerilog(_logger);
 
 var _jwtSetting = builder.Configuration.GetSection("JwtSetting");
 builder.Services.Configure<JwtSettings>(_jwtSetting);
+// Console.WriteLine(_jwtSetting["SecurityKey"]+"99999");
 
 var app = builder.Build();
 app.UseRateLimiter();

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using ASPAPI.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace ASPAPI.Data;
@@ -21,7 +22,7 @@ public partial class DataContext : DbContext
     public virtual DbSet<Customer> Customers { get; set; }
 
 
-    public virtual DbSet<TblRefreshtoken> TblRefreshtoken { get; set; }
+    public virtual DbSet<TblRefreshToken> TblRefreshToken { get; set; }
 
 
     public virtual DbSet<User> Users { get; set; }
@@ -29,11 +30,9 @@ public partial class DataContext : DbContext
        protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
 
-
         modelBuilder.Entity<Customer>(entity =>
         {
             entity.HasKey(e => e.Code);
-
             entity.Property(e => e.Code).HasMaxLength(50);
             entity.Property(e => e.CreditLimit).HasPrecision(18, 2);
             entity.Property(e => e.Email).HasMaxLength(50);
@@ -41,19 +40,18 @@ public partial class DataContext : DbContext
             entity.Property(e => e.Phone).HasMaxLength(50);
         });
 
-        modelBuilder.Entity<TblRefreshtoken>(entity =>
+        modelBuilder.Entity<TblRefreshToken>(entity =>
         {
-            entity.HasKey(e => e.Userid).HasName("Refreshtoken_pkey");
+            entity.HasKey(e => e.UserId).HasName("RefreshToken_pkey");
 
-            entity.ToTable("Refreshtoken");
-
-            entity.Property(e => e.Userid)
+            entity.ToTable("RefreshToken");
+            entity.Property(e => e.UserId)
                 .HasMaxLength(50)
                 .HasColumnName("userid");
-            entity.Property(e => e.Refreshtoken)
+            entity.Property(e => e.RefreshToken)
                 .HasMaxLength(9999999)
                 .HasColumnName("refreshtoken");
-            entity.Property(e => e.Tokenid)
+            entity.Property(e => e.TokenId)
                 .HasMaxLength(50)
                 .HasColumnName("tokenid");
         });

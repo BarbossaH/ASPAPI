@@ -5,20 +5,20 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace ASPAPI.Models;
 
-public partial class TblRefreshtoken
+public partial class TblRefreshToken
 {
-[Key]
+    [Key]
     [Column("userid")]
     [StringLength(50)]
     [Unicode(false)]
-    public string Userid { get; set; } = null!;
+    public string UserId { get; set; } = null!;
 
     [Column("tokenid")]
     [StringLength(50)]
     [Unicode(false)]
-    public string? Tokenid { get; set; }
+    public string? TokenId { get; set; }
 
     [Column("refreshtoken")]
     [Unicode(false)]
-    public string? Refreshtoken { get; set; }
+    public string? RefreshToken { get; set; }
 }
